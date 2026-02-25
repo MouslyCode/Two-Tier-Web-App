@@ -34,7 +34,8 @@ services:
     networks:
       - two-tier
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
