@@ -4,6 +4,8 @@ services:
   mysql: 
     container_name: mysql
     image: mysql
+    env_file:
+    - .env
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -15,7 +17,7 @@ services:
       - twotier
     restart: always
     healthcheck:
-      test: ["CMD","mysqladmin","ping","-h","localhost","-uroot","-proot"]
+      test: ["CMD","mysqladmin","ping","-h","localhost","-uroot","-p${MYSQL_ROOT_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -26,11 +28,13 @@ services:
     container_name: two-tier-app
     ports:
       - "5000:5000"
+    env_file:
+      - .env
     environment:
-      - MYSQL_HOST=mysql
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DB=${MYSQL_DATABASE}
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
     networks:
       - two-tier
     depends_on:
@@ -49,5 +53,6 @@ volumes:
   
 networks:
   two-tier:
+
 
 

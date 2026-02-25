@@ -12,6 +12,7 @@
         }
 
         body {
+            display:flex;
             font-family: Arial, sans-serif;
             background-color: #fcf8ed;
             margin: 0;
@@ -28,6 +29,7 @@
             width: 100%;
             width: 1050px;
             padding: 30px;
+            margin:auto;
         }
 
         .header h1 {
@@ -176,13 +178,44 @@
                 {% endfor %}
             </div>
 
-            <form id="messageForm">
+            <form id="messageForm" method="POST">
                 <input type="text" name="new_message" placeholder="Type your message..." required>
                 <input type="submit" value="Send">
             </form>
 
         </div>
     </div>
-</body>
 
+    <script src="https://code.jquery.com/jquery-4.0.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#messageForm").on("submit", function(e){
+                e.preventDefault();
+                let messageInput = $("input[name='new_message']");
+                let message = messageInput.val().trim();
+
+                if (message === "") {
+                    alert("Message cannot be empty!");
+                    return;
+                }
+
+                $.ajax({
+                    url: "/submit",
+                    type: "POST",
+                    data: { new_message: message},
+                    success: function(response){
+                        if (response && response.message) {
+                            $(".messages").append("<p>"+response.message + "</p>");
+                            messageInput.val("");
+                        }
+                    },
+                    error: function(xhr, status, error){
+                        console.error("AJAX Error:", status, error);
+                    }
+                });
+            });
+        });
+
+    </script>
+</body>
 </html>
