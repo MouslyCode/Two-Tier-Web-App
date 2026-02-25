@@ -17,7 +17,7 @@ services:
       - twotier
     restart: always
     healthcheck:
-      test: ["CMD","mysqladmin","ping","-h","localhost","-uroot","-p${MYSQL_ROOT_PASSWORD}"]
+      test: ["CMD","mysqladmin","ping","-h","localhost","-u${DB_USER}","-p${MYSQL_ROOT_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 5
