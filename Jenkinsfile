@@ -14,6 +14,16 @@ pipeline{
                 git branch: 'main', url: 'https://github.com/MouslyCode/Two-Tier-Web-App.git'
             }
         }
+        stage("Create .env file"){
+            steps{
+                sh '''
+                    echo "MYSQL_DATABASE=${MYSQL_DATABASE}" > .env
+                    echo "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}" >> .env
+                    echo "DB_USER=${DB_USER}" >> .env
+                    echo "DB_HOST=${DB_HOST}" >> .env
+                '''
+            }
+        }
         stage("Build Docker Image"){
             steps{
                 sh 'docker build -t flask-app:latest .'
@@ -21,11 +31,16 @@ pipeline{
         }
         stage("Deploy with Docker Compose"){
             steps{
-                // Stop existiing containers
+                // Stop existing containers
                 sh 'docker compose down || true'
                 // Starting the aplication, and rebuilding the flask image
                 sh 'docker compose up -d --build'
             }
+        }
+    }
+    post{
+        always{
+            sh 'sh -f .env'
         }
     }
 }
