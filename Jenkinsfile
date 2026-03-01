@@ -1,6 +1,13 @@
 pipeline{
     agent any
 
+    environment{
+        MYSQL_DATABASE      = credentials('MYSQL_DATABASE')
+        MYSQL_ROOT_PASSWORD = credentials('MYSQL_ROOT_PASSWORD')
+        DB_USER             = credentials('DB_USER')
+        DB_HOST             = credentials('DB_HOST')
+    }
+
     stages{
         stage("Clone Code"){
             steps{
