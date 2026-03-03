@@ -40,7 +40,9 @@ pipeline{
     }
     post{
         always{
-            sh 'sh -f .env'
+            script{
+                sh 'sh -f .env'
+            }
         }
     }
 }
